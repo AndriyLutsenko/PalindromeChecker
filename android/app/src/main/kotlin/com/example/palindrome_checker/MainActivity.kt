@@ -1,4 +1,4 @@
-package com.example.weather
+package com.example.palindrome_checker
 
 import io.flutter.embedding.android.FlutterActivity
 

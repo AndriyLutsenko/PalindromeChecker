@@ -1,4 +1,4 @@
-# weather
+# palindrome_checker
 
 A new Flutter project.
 

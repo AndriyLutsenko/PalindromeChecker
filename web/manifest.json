@@ -1,6 +1,6 @@
 {
-    "name": "weather",
-    "short_name": "weather",
+    "name": "palindrome_checker",
+    "short_name": "palindrome_checker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

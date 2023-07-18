@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,148 +14,124 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: PalindromePage(),
+      debugShowCheckedModeBanner: false,
+      home: const PalindromePage(),
     );
   }
 }
 
 class PalindromePage extends StatefulWidget {
+  const PalindromePage({super.key});
+
   @override
-  _PalindromePageState createState() => _PalindromePageState();
+  State<PalindromePage> createState() => PalindromePageState();
 }
 
-class _PalindromePageState extends State<PalindromePage> {
-  String inputText1 = '';
-  String inputText2 = '';
-  String result1 = '';
-  String result2 = '';
+class PalindromePageState extends State<PalindromePage> {
+  String inputText = '';
+  String result = '';
 
-  bool isPalindrome(String word) {
-    // List<String> characters = word.split('');
-    // List<String> reversedCharacters = characters.reversed.toList();
-    // return characters.join() == reversedCharacters.join();
-    return word == word.split('').reversed.join();
-  }
-
-  void checkPalindrome1() {
+  void checkPalindrome() {
+    String modText =
+        inputText.toUpperCase().replaceAll(" ", "").replaceAll("\n", "");
     setState(() {
-      if (isPalindrome(inputText1)) {
-        result1 = 'Перевірене слово є паліндромом!';
+      if (modText.isEmpty) {
+        result = 'Не введено значимих символів';
+      } else if (modText == modText.split('').reversed.join()) {
+        result = 'Цей вираз є паліндромом!';
       } else {
-        result1 = 'Перевірене слово не є паліндромом.';
+        result = 'Цей вираз не є паліндромом.';
       }
     });
-  }
-
-  void checkPalindrome2(String text) {
-    setState(() {
-      if (isPalindrome(text)) {
-        result2 = 'Це слово є паліндромом!';
-      } else {
-        result2 = 'Це слово не є паліндромом.';
-      }
-    });
-  }
-
-  bool isOneWord(String text) {
-    return RegExp(r"^[a-zA-Z]+$").hasMatch(text);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // resizeToAvoidBottomInset: true,
       appBar: AppBar(
         toolbarHeight: 100,
-        title: Text('Palindrome Checker'),
-      ),
-      endDrawer: Drawer(
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              SizedBox(height: 150),
-              TextField(
-                onChanged: (text) {
-                  setState(() {
-                    if (isOneWord(text)) {
-                      inputText2 = text.toUpperCase();
-                      checkPalindrome2(inputText2);
-                    } else {
-                      inputText2 = '';
-                      result2 = '';
-                    }
-                  });
-                },
-                decoration: InputDecoration(
-                  labelText: 'Введіть слово',
-                ),
-              ),
-              SizedBox(height: 16.0),
-              Text(
-                result2,
-                style: TextStyle(fontSize: 18.0),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+        title: const Text(
+          'Palindrome Checker',
+          style: TextStyle(fontSize: 25),
         ),
       ),
+
       body: SingleChildScrollView(
+        reverse: true,
+        physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 150),
+              const SizedBox(height: 150),
               TextField(
+                style: TextStyle(fontSize: 20, height: 1.5),
+                minLines: 1,
+                maxLines: 10,
                 onChanged: (text) {
                   setState(() {
-                    if (isOneWord(text)) {
-                      inputText1 = text.toUpperCase();
-                    } else {
-                      inputText1 = '';
-                    }
+                    inputText = text;
+                    result = '';
                   });
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Введіть слово',
+                  labelText: 'Введіть вираз для перевірки',
                 ),
               ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: inputText1.isNotEmpty ? checkPalindrome1 : null,
-                child: Text('Перевірити'),
-              ),
-              SizedBox(height: 16.0),
-              Text(
-                result1,
-                style: TextStyle(fontSize: 18.0),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 32.0),
-              TextField(
-                onChanged: (text) {
-                  setState(() {
-                    if (isOneWord(text)) {
-                      inputText2 = text.toUpperCase();
-                      checkPalindrome2(inputText2);
-                    } else {
-                      inputText2 = '';
-                      result2 = 'Помилка введення';
-                    }
-                  });
-                },
-                decoration: InputDecoration(
-                  labelText: 'Введіть слово',
+              const SizedBox(height: 16.0),
+              Tooltip(
+                triggerMode: TooltipTriggerMode.tap,
+                message:
+                    inputText.isEmpty ? 'Спочатку потрібно щось ввести' : '',
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: Colors.yellowAccent,
+                ),
+                height: 50,
+                padding: const EdgeInsets.all(8.0),
+                preferBelow: false,
+                textStyle: const TextStyle(
+                  fontSize: 24,
+                ),
+                showDuration: const Duration(seconds: 1),
+                // waitDuration: const Duration(seconds: 1),
+
+                child: ElevatedButton(
+                  onPressed: inputText.isNotEmpty ? checkPalindrome : null,
+                  style:
+                      ElevatedButton.styleFrom(minimumSize: const Size(10, 50)),
+                  child: const Text(
+                    'Перевірити',
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
-              SizedBox(height: 16.0),
-              Text(
-                result2,
-                style: TextStyle(fontSize: 18.0),
-                textAlign: TextAlign.center,
-              ),
-              // SizedBox(height: 1600),
+              const SizedBox(height: 16.0),
+              Text(result,
+                  style: const TextStyle(fontSize: 23.0),
+                  textAlign: TextAlign.center),
+              // const SizedBox(height: 16.0),
+              // SizedBox(
+              //   height: 150,
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(25),
+              //       gradient: const LinearGradient(
+              //           begin: Alignment.centerLeft,
+              //           end: Alignment.centerRight,
+              //           // tileMode: TileMode.mirror,
+              //           transform: GradientRotation(1.2),
+              //           colors: <Color>[
+              //             Colors.blue,
+              //             Colors.blueAccent,
+              //             Colors.yellowAccent,
+              //             Colors.yellow
+              //           ]),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
